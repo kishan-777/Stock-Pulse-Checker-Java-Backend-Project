@@ -1,0 +1,11 @@
+package com.inventory.exception;
+
+public class ProductNotFoundException extends Exception {
+    public ProductNotFoundException(String message) {
+        super(message);
+    }
+
+    public ProductNotFoundException(int productId) {
+        super("Product not found with ID: " + productId);
+    }
+}
