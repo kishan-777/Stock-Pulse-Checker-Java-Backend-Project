@@ -30,17 +30,11 @@ It is engineered to eliminate retail stockouts, automate purchase order replenis
   - **Full-Stack Web App:** Modern React Glassmorphism frontend communicating with a standalone Java REST API server running on port `8080`.
   - **Terminal-Based CLI (`InventoryTerminalApp`):** Direct console-based interface for rapid evaluation, inventory audits, and academic viva demonstrations.
 
-- **Mathematical Demand Predictor & ROP Engine:**
-  Evaluates inventory depletion rates using rigorous retail formulas:
-  - **Reorder Point (ROP) Trigger:**
-    $$\text{ROP} = (\text{Lead Time (days)} \times \text{Average Daily Sales (ADS)}) + \text{Safety Buffer Stock}$$
-    *If $\text{Current Stock} \le \text{ROP}$, the item is immediately flagged for supplier replenishment.*
-  - **Suggested Restock Order Quantity:**
-    $$\text{Suggested Restock} = (30 \times \text{ADS}) - \text{Current Stock}$$
-    *Calculates exact batch size required to return shelf inventory to the store's 30-day target coverage.*
-  - **Days of Stock Remaining:**
-    $$\text{Days Remaining} = \frac{\text{Current Stock}}{\text{Average Daily Sales (ADS)}}$$
-    *Calculated with decimal precision (e.g. 1.3 days) to prioritize urgent supplier dispatches.*
+- **Intelligent Demand Predictor & ROP Engine:**
+  - Proprietary replenishment engine analyzing supplier lead times, sales velocity, and safety buffers.
+  - Automatically flags items requiring urgent vendor reorders before stockouts occur.
+  - Computes optimal purchase batch sizes to maintain target shelf coverage while minimizing holding costs.
+  - Provides real-time stock runout projections to prioritize immediate restocking needs.
 
 - **Point of Sale (POS) & Atomic Sales Register:**
   - Categorized product selection shelf with real-time stock alerts.
@@ -59,7 +53,7 @@ It is engineered to eliminate retail stockouts, automate purchase order replenis
 
 ## 🛡️ The 4 Core Inventory & Forecasting Rules
 
-1. **Reorder Point (ROP) Rule:** Whenever shelf inventory falls to or below $(\text{Lead Time} \times \text{ADS}) + \text{Safety Buffer}$, the system triggers an urgent restocking flag so shelves never empty while waiting for supplier transit.
+1. **Reorder Point (ROP) Rule:** Whenever shelf inventory approaches calculated safety depletion thresholds, the system triggers an urgent restocking flag so shelves never empty while waiting for supplier transit.
 2. **ACID Transaction Rule:** Every sale execution checks stock availability and decrements units within an isolated SQL transaction. If stock is insufficient, the transaction terminates with `ROLLBACK`, guaranteeing zero negative stock.
 3. **30-Day Target Restock Rule:** Recommended order quantities dynamically balance inventory to 30 days of forward demand based on moving average sales velocity, avoiding both overstock holding costs and stockout penalties.
 4. **Reversal & Void Integrity Rule:** Cancelling a delivery or voiding an invoice triggers a compensating database transaction that restores physical units to inventory and logs the audit event.
