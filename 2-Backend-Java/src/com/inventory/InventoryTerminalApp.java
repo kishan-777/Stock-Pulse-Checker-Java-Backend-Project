@@ -5,6 +5,7 @@ import com.inventory.exception.InsufficientStockException;
 import com.inventory.model.*;
 import com.inventory.service.DemandPredictorService;
 import com.inventory.service.InventoryService;
+import com.inventory.service.FileReportService;
 import com.inventory.controller.HttpApiServer;
 
 import java.sql.SQLException;
@@ -32,6 +33,7 @@ public class InventoryTerminalApp {
     private static final SalesDAO salesDAO = new SalesDAO();
     private static final DemandPredictorService predictorService = new DemandPredictorService();
     private static final InventoryService inventoryService = new InventoryService();
+    private static final FileReportService fileReportService = new FileReportService();
 
     public static void main(String[] args) {
         // Test database connection on startup
@@ -49,7 +51,7 @@ public class InventoryTerminalApp {
         while (running) {
             printBanner();
             printMenu();
-            System.out.print("\nEnter your choice [0 - 10]: ");
+            System.out.print("\nEnter your choice [0 - 11]: ");
             String choice = scanner.nextLine().trim();
 
             try {
@@ -64,6 +66,7 @@ public class InventoryTerminalApp {
                     case "8": runDemandPredictor(); break;
                     case "9": generateInventoryReport(); break;
                     case "10": startWebServer(); break;
+                    case "11": exportToCsv(); break;
                     case "0":
                         System.out.println("\nExiting Smart Inventory CLI. Thank you!");
                         running = false;
@@ -104,6 +107,7 @@ public class InventoryTerminalApp {
         System.out.println(" [8]  Run Demand Predictor & ROP Replenishment Engine  <-- [VIVA STAR]");
         System.out.println(" [9]  Generate Inventory Valuation & Analytics Report");
         System.out.println(" [10] Start Background Web Server (:8080) for React UI");
+        System.out.println(" [11] Export Product Catalog to CSV (File I/O Streams Demo)");
         System.out.println(" [0]  Exit Program");
         System.out.println("-".repeat(75));
     }
@@ -344,6 +348,19 @@ public class InventoryTerminalApp {
             System.out.println("[WebServer] Server running! React frontend can now connect to http://localhost:8080");
         } catch (Exception e) {
             System.out.println("[WebServer ERROR] " + e.getMessage());
+        }
+    }
+
+    // 11. Export Catalog to CSV (File I/O Demo)
+    private static void exportToCsv() {
+        System.out.println("\n--- EXPORT PRODUCT CATALOG TO CSV (JAVA FILE I/O) ---");
+        try {
+            java.io.File file = new java.io.File("inventory_export.csv");
+            int count = fileReportService.exportProductsToCsv(file);
+            System.out.println("[SUCCESS] Exported " + count + " products to: " + file.getAbsolutePath());
+            System.out.println("[INFO] Written using Java Character Streams (FileWriter + BufferedWriter) with try-with-resources.");
+        } catch (Exception e) {
+            System.out.println("[ERROR] Failed to export CSV: " + e.getMessage());
         }
     }
 

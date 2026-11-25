@@ -27,3 +27,10 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Academic viva, presentation & internal generator scripts (local only)
+*.pdf
+*.pptx
+generate_*.py
+build_*.py
+3-Frontend-React/
